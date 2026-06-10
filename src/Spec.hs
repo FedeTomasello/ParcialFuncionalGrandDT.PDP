@@ -58,3 +58,52 @@ correrTests = hspec $ do
 
   it "con equipo vacío devuelve True" $ do
     habilidadMinima 35 [] `shouldBe` True
+  
+
+
+  describe "bielsa" $ do
+    it "aumenta 50% la velocidad" $ do
+      velocidad (bielsa pupiSalmeron) `shouldBe` 49.5  -- 33 * 1.5
+
+    it "baja 10 puntos de habilidad" $ do
+      habilidad (bielsa pupiSalmeron) `shouldBe` 68  -- 78 - 10
+
+  describe "gago" $ do
+    it "convierte volante a defensor" $ do
+      puesto (gago garrafaSanchez) `shouldBe` Defensor
+
+    it "convierte delantero a volante" $ do
+      puesto (gago pupiSalmeron) `shouldBe` Volante
+
+    it "no cambia al arquero" $ do
+      puesto (gago (pupiSalmeron { puesto = Arquero })) `shouldBe` Arquero
+
+    it "no cambia al defensor" $ do
+      puesto (gago satanasPaez) `shouldBe` Defensor
+
+  describe "menotti" $ do
+    it "agrega Mr. al nombre" $ do
+      nombre (menotti 10 pupiSalmeron) `shouldBe` "Mr. Pupi Salmeron"
+
+    it "aumenta la habilidad según el parámetro" $ do
+      habilidad (menotti 10 pupiSalmeron) `shouldBe` 88  -- 78 + 10
+
+    it "es parametrizable" $ do
+      habilidad (menotti 20 pupiSalmeron) `shouldBe` 98  -- 78 + 20
+
+  describe "bertolotti" $ do
+    it "aumenta siempre 10 de habilidad" $ do
+      habilidad (bertolotti pupiSalmeron) `shouldBe` 88
+
+    it "agrega Mr. al nombre igual que menotti 10" $ do
+      nombre (bertolotti pupiSalmeron) `shouldBe` "Mr. Pupi Salmeron"
+
+  describe "vangaal" $ do
+    it "no modifica al jugador" $ do
+      vangaal pupiSalmeron `shouldBe` pupiSalmeron
+
+  describe "composición de técnicos" $ do
+    it "bielsa luego menotti luego vangaal modifica velocidad, habilidad y nombre" $ do
+      nombre (vangaal . menotti 10 . bielsa $ pupiSalmeron) `shouldBe` "Mr. Pupi Salmeron"
+      habilidad (vangaal . menotti 10 . bielsa $ pupiSalmeron) `shouldBe` 78  -- 78 - 10 + 10
+      velocidad (vangaal . menotti 10 . bielsa $ pupiSalmeron) `shouldBe` 49.5

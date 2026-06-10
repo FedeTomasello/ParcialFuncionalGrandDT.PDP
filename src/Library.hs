@@ -102,3 +102,30 @@ metieronGoles  = length . filter (all (> 0) . map goles . partidos)
 habilidadMinima :: Number -> [Jugador] -> Bool
 habilidadMinima puntosMinimos =  all ((==Volante) . puesto) . (filter ((> puntosMinimos) . habilidad))
 
+
+-- Punto 2 --
+
+type Tecnico = Jugador -> Jugador
+
+bielsa :: Tecnico
+bielsa jugador = jugador {velocidad = velocidad jugador * 1.5,habilidad = habilidad jugador - 10}
+
+gago :: Tecnico
+gago jugador 
+    | puesto jugador == Volante = jugador {puesto = Defensor}
+    | puesto jugador == Delantero = jugador {puesto = Volante}
+    | otherwise = jugador
+
+menotti :: Number -> Tecnico 
+menotti puntos jugador = jugador {nombre = "Mr. " ++ nombre jugador, habilidad = habilidad jugador + puntos}
+
+bertolotti :: Tecnico
+bertolotti = menotti 10
+
+vangaal :: Tecnico
+vangaal jugador = jugador
+
+-- (vangaal . menotti X . bielsa) jugador --
+-- (vangaal . menotti 10 . bielsa) pupiSalmeron --
+
+
