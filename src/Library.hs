@@ -80,8 +80,13 @@ habilidad = 1,
 partidos = [(0,0),(0,0),(0,0)]
 
 }
+laSelesio :: [Jugador]
+laSelesio = [pupiSalmeron, garrafaSanchez, satanasPaez, caniete, bigliaBurro]
 
 -- Punto 1 --
 
 -- a) Queremos saber los nombres de los jugadores de un equipo que jugaron todos los partidos al menos una cantidad de minutos, donde esa cantidad de minutos sea parametrizable. 
 --Por ejemplo, si elegimos que la cantidad de minutos sea 45, puede haber jugado 45, 46 ó los 90, eso alcanza.
+
+minutosJugados :: Number -> [Jugador] -> [String]
+minutosJugados unMinuto = map nombre . filter (all (>= unMinuto) . map minutos . partidos) 
