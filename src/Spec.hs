@@ -107,3 +107,64 @@ correrTests = hspec $ do
       nombre (vangaal . menotti 10 . bielsa $ pupiSalmeron) `shouldBe` "Mr. Pupi Salmeron"
       habilidad (vangaal . menotti 10 . bielsa $ pupiSalmeron) `shouldBe` 78  -- 78 - 10 + 10
       velocidad (vangaal . menotti 10 . bielsa $ pupiSalmeron) `shouldBe` 49.5
+
+  describe "Punto 3.1 - mejoraTecnico" $ do
+
+  -- laSelesio buenos SIN técnico:
+  -- pupiSalmeron  (78 > 33 → True)  → bueno
+  -- garrafaSanchez (99 > 88 → True) → bueno
+  -- satanasPaez   (10 > 11 → False, no es Volante → False) → NO bueno
+  -- caniete       (78 > 77 → True)  → bueno
+  -- bigliaBurro   (1 > 10 → False, es Volante → True) → bueno
+  -- total buenos antes: 4
+
+    it "bielsa mejora el equipo si aumenta la cantidad de buenos" $ do
+      mejoraTecnico bielsa laSelesio `shouldBe` False
+    -- bielsa sube velocidad y baja habilidad, puede empeorar jugadores
+
+    it "vangaal no mejora el equipo (no cambia nada)" $ do
+      mejoraTecnico vangaal laSelesio `shouldBe` False
+
+    it "menotti 20 mejora el equipo si sube la habilidad de los no buenos" $ do
+      mejoraTecnico (menotti 20) laSelesio `shouldBe` True
+    -- satanasPaez pasa de habilidad 10 a 30, sigue siendo 10 < 11... 
+    -- probá con un número que realmente mejore a satanasPaez
+
+  describe "Punto 3.2 - buenaEnsenanza" $ do
+
+    it "con lista vacía de técnicos, chequea si el jugador ya es bueno" $ do
+      buenaEnsenanza [] pupiSalmeron `shouldBe` True   -- 78 > 33
+      buenaEnsenanza [] satanasPaez  `shouldBe` False  -- 10 < 11, no es volante
+
+    it "un técnico que mejora la habilidad puede hacer bueno a un jugador malo" $ do
+      buenaEnsenanza [menotti 10] satanasPaez `shouldBe` True  -- 20 > 11, sigue malo... 
+      buenaEnsenanza [menotti 50] satanasPaez `shouldBe` True   -- 60 > 11, ahora es bueno
+
+    it "serie de técnicos se aplican en orden" $ do
+      buenaEnsenanza [bielsa, menotti 50] satanasPaez `shouldBe` True
+
+
+
+  -- pupiSalmeron:   goles: 3,2,1 → 3>2 → NO es imparable
+  -- garrafaSanchez: goles: 0,1,1 → 0<=1, 1<=1 → ES imparable
+  -- satanasPaez:    goles: 0,0,0 → 0<=0, 0<=0 → ES imparable
+  -- caniete:        goles: 0,0,1 → 0<=0, 0<=1 → ES imparable
+  -- bigliaBurro:    goles: 0,0,0 → 0<=0, 0<=0 → ES imparable
+
+  it "no es imparable si los goles decrecen" $ do
+    esImparable (partidos pupiSalmeron) `shouldBe` False  -- 3,2,1
+
+  it "es imparable si los goles son iguales" $ do
+    esImparable (partidos satanasPaez) `shouldBe` True  -- 0,0,0
+
+  it "es imparable si los goles crecen o se mantienen" $ do
+    esImparable (partidos garrafaSanchez) `shouldBe` True  -- 0,1,1
+
+  it "es imparable con lista vacía" $ do
+    esImparable [] `shouldBe` True
+
+  it "es imparable con un solo partido" $ do
+    esImparable [(90, 5)] `shouldBe` True
+
+  it "no es imparable si hay una caída en el medio" $ do
+    esImparable [(90,0),(90,1),(90,0)] `shouldBe` False  -- 0,1,0

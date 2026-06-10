@@ -1,5 +1,6 @@
 module Library where
 import PdePreludat
+import GHC.RTS.Flags (ParFlags)
 
 -- Declaraciones---
 
@@ -129,3 +130,35 @@ vangaal jugador = jugador
 -- (vangaal . menotti 10 . bielsa) pupiSalmeron --
 
 
+-- Punto 3.1 --
+
+jugadorBueno :: Jugador -> Bool
+jugadorBueno jugador = habilidad jugador > velocidad jugador || puesto jugador == Volante
+
+cantidadBuenos :: [Jugador] -> Number
+cantidadBuenos = length . filter jugadorBueno
+
+mejoraTecnico :: Tecnico -> [Jugador] -> Bool
+mejoraTecnico tecnico equipo = cantidadBuenos (map tecnico equipo) > cantidadBuenos equipo
+
+-- Punto 3.2 --
+
+jugadorBueno2 :: Jugador -> Bool
+jugadorBueno2 jugador = habilidad jugador > velocidad jugador || puesto jugador == Volante
+
+cantidadBuenos2 :: [Jugador] -> Number
+cantidadBuenos2 = length . filter jugadorBueno2
+
+buenaEnsenanza :: [Tecnico] -> Jugador -> Bool
+buenaEnsenanza tecnicos jugador = jugadorBueno2 (foldl (flip ($)) jugador tecnicos)
+
+-- Punto 4 --
+esImparable :: [Partido] -> Bool
+esImparable [] = True
+esImparable [_] = True
+esImparable (partido1:partido2:cola) = goles partido1 <= goles partido2 && esImparable (partido2:cola)
+
+
+--Punto 5-- 
+
+--Si, termina dando flase gracias a Lazy evaluation ya que se cortocircuita en el &&. Converge. 
