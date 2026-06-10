@@ -90,3 +90,15 @@ laSelesio = [pupiSalmeron, garrafaSanchez, satanasPaez, caniete, bigliaBurro]
 
 minutosJugados :: Number -> [Jugador] -> [String]
 minutosJugados unMinuto = map nombre . filter (all (>= unMinuto) . map minutos . partidos) 
+
+-- b) Queremos saber cuántos jugadores de un equipo marcaron goles en todos los partidos. --
+
+metieronGoles :: [Jugador] -> Number
+metieronGoles  = length . filter (all (> 0) . map goles . partidos)
+
+-- c) Queremos saber si todos los jugadores de un equipo que tienen más de un mínimo de puntos de habilidad son volantes, donde ese mínimo es confi gurable. 
+-- Ojo: si elijo que el mínimo sea 35, si hay 2 volantes que tienen 40 y 50 puntos de habilidad y un delantero con 50 puntos de habilidad, la condición no se cumple: todos los jugadores deben ser únicamente volantes.
+
+habilidadMinima :: Number -> [Jugador] -> Bool
+habilidadMinima puntosMinimos =  all ((==Volante) . puesto) . (filter ((> puntosMinimos) . habilidad))
+

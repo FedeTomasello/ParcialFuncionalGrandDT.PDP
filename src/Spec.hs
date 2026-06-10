@@ -24,3 +24,37 @@ correrTests = hspec $ do
 
     it "con equipo vacío, devuelve lista vacía" $ do
       minutosJugados 45 [] `shouldBe` []
+    
+  describe "Punto 1b - cantidadQueMarcaronEnTodos" $ do
+
+    -- pupiSalmeron:   (90,3),(90,2),(45,1) → goles: 3,2,1 → todos > 0 → cumple
+    -- garrafaSanchez: (90,0),(90,1),(90,1) → goles: 0,1,1 → tiene 0 → NO cumple
+    -- satanasPaez:    (90,0),(90,0),(90,0) → goles: 0,0,0 → todos 0  → NO cumple
+    -- caniete:        (0,0),(0,0),(45,1)   → goles: 0,0,1 → tiene 0  → NO cumple
+    -- bigliaBurro:    (0,0),(0,0),(0,0)    → goles: 0,0,0 → todos 0  → NO cumple
+
+    it "devuelve cuántos jugadores metieron goles en todos sus partidos" $ do
+      metieronGoles laSelesio `shouldBe` 1
+
+    it "con equipo vacío devuelve 0" $ do
+      metieronGoles [] `shouldBe` 0
+  
+  describe "Punto 1c - habilidadMinima" $ do
+  -- con mínimo 35, jugadores con habilidad > 35:
+  --   pupiSalmeron (78, Delantero) → NO es volante → False
+  --   garrafaSanchez (99, Volante) → es volante
+  --   caniete (78, Volante)        → es volante
+  -- con mínimo 80, jugadores con habilidad > 80:
+  --   garrafaSanchez (99, Volante) → es volante → True
+  -- con mínimo 100, nadie supera → all sobre lista vacía → True
+    it "devuelve False si algún jugador con habilidad suficiente no es volante" $ do
+      habilidadMinima 35 laSelesio `shouldBe` False
+
+  it "devuelve True si todos los jugadores con habilidad suficiente son volantes" $ do
+    habilidadMinima 80 laSelesio `shouldBe` True
+
+  it "devuelve True si ningún jugador supera el mínimo (all sobre lista vacía)" $ do
+    habilidadMinima 100 laSelesio `shouldBe` True
+
+  it "con equipo vacío devuelve True" $ do
+    habilidadMinima 35 [] `shouldBe` True
